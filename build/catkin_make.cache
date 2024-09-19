@@ -1,0 +1,2 @@
+apriltag_ros/apriltag_ros:env
+-DCATKIN_DEVEL_PREFIX=/home/yujian/AprilTag_Localization/devel -DCMAKE_INSTALL_PREFIX=/home/yujian/AprilTag_Localization/install -G Unix Makefiles

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="/use_sim_time" value="true"/>
+    <!-- 設置環境變數 -->
+    <env name="GAZEBO_MODEL_PATH" value="${GAZEBO_MODEL_PATH}:$(find AprilTag_Localization)/models"/>
+    <env name="GAZEBO_RESOURCE_PATH" value="${GAZEBO_RESOURCE_PATH}:$(find AprilTag_Localization)/models"/>
+    
+    <!-- Include the MAVROS node with SITL and Gazebo -->
+    <include file="$(find AprilTag_Localization)/launch/iris_sitl.launch">
+         <arg name="world" default="$(find AprilTag_Localization)/world/square.world"/>
+    </include>
+
+    <!-- Include apriltag_node -->
+    <include file="$(find apriltag_ros)/launch/continuous_detection.launch" />
+
+    <!-- Our node to control drone -->
+    <node pkg="AprilTag_Localization" type="setpoint_node.py" name="setpoint_node_py" required="true" output="screen" />
+    <node pkg="AprilTag_Localization" type="tag_detection.py" name="tag_detection_py" required="true" output="screen" />
+
+    <!-- Include robot_localization EKF node -->
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+        <rosparam command="load" file="$(find AprilTag_Localization)/config/ekf_config.yaml" />
+    </node>
+
+    <!-- Add static transforms -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 map odom" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_down_camera" args="0 0 0 0 0 0 base_link down_camera_link" />
+
+    <!-- Add tf_monitor for debugging -->
+    <node pkg="tf" type="tf_monitor" name="tf_monitor" output="screen"/>
+
+    <!--
+    <node pkg="AprilTag_Localization" type="DataReader.py" name="DataReader_py" required="true" output="screen" />
+    -->
+</launch>

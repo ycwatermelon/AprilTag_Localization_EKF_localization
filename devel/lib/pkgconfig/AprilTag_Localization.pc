@@ -1,0 +1,8 @@
+prefix=/home/yujian/AprilTag_Localization/devel
+
+Name: AprilTag_Localization
+Description: Description of AprilTag_Localization
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
